@@ -16,7 +16,7 @@ export default {
       return Response.redirect(LINUX_SCRIPT, 302);
     }
 
-    // 2. Browser Display (The "True Dark" Theme)
+    // 2. Browser Display
     const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -26,13 +26,12 @@ export default {
       <title>Install Harbor Lighthouse</title>
       <style>
         :root {
-          /* 🎨 YOUR BRAND COLORS */
-          --brand-orange: #FF4F00;  /* International Orange */
-          --bg-body: #050505;       /* True Black (Matches your site) */
-          --bg-card: #121212;       /* Neutral Dark Grey */
-          --border: #2a2a2a;        /* Subtle Border */
+          --brand-orange: #FF4F00;
+          --bg-body: #050505;
+          --bg-card: #121212;
+          --border: #2a2a2a;
           --text-main: #ffffff;
-          --text-muted: #a1a1aa;    /* Neutral Grey text */
+          --text-muted: #a1a1aa;
         }
 
         body { 
@@ -50,110 +49,56 @@ export default {
         .container { 
           background: var(--bg-card); 
           padding: 3rem; 
-          border-radius: 24px; /* Smoother rounding like your site */
+          border-radius: 24px;
           border: 1px solid var(--border);
-          box-shadow: 0 0 40px rgba(0, 0, 0, 0.5); /* Deep shadow */
+          box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
           max-width: 600px; 
           width: 100%; 
           position: relative;
           overflow: hidden;
         }
 
-        /* Top Orange Glow Line */
         .container::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 2px;
+          content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
           background: linear-gradient(90deg, transparent, var(--brand-orange), transparent);
           box-shadow: 0 0 20px var(--brand-orange);
         }
 
-        h1 { 
-          margin-top: 0; 
-          font-size: 2rem; 
-          font-weight: 700; 
-          letter-spacing: -0.03em;
-          margin-bottom: 0.5rem;
-        }
-        
+        h1 { margin-top: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
         h1 span { color: var(--brand-orange); }
-        
-        p { 
-          color: var(--text-muted); 
-          line-height: 1.6; 
-          margin-bottom: 2.5rem; 
-          font-size: 1.05rem;
-        }
+        p { color: var(--text-muted); line-height: 1.6; margin-bottom: 2.5rem; font-size: 1.05rem; }
         
         .section { margin-bottom: 2rem; }
-        
-        .label { 
-          font-size: 0.75rem; 
-          font-weight: 700; 
-          text-transform: uppercase; 
-          color: var(--text-muted); 
-          letter-spacing: 0.05em; 
-          margin-bottom: 10px; 
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
+        .label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
-        /* Icons for OS */
-        .icon-linux::before { content: '🐧'; }
-        .icon-win::before { content: '🪟'; }
-
-        .code-wrapper { 
-          position: relative; 
-          background: #000000; /* Pure black for code */
-          border-radius: 12px; 
-          border: 1px solid var(--border); 
-          transition: border-color 0.2s;
-        }
-        
-        .code-wrapper:hover {
-          border-color: #444;
-        }
-
-        .code-block { 
-          padding: 1.2rem; 
-          font-family: 'Menlo', 'Monaco', 'Courier New', monospace; 
-          margin: 0; 
-          overflow-x: auto; 
-          white-space: nowrap; 
-          color: #e2e8f0; 
-          font-size: 0.95rem; 
-        }
-        
+        .code-wrapper { position: relative; background: #000; border-radius: 12px; border: 1px solid var(--border); transition: border-color 0.2s; }
+        .code-wrapper:hover { border-color: #444; }
+        .code-block { padding: 1.2rem; font-family: 'Menlo', 'Monaco', 'Courier New', monospace; margin: 0; overflow-x: auto; white-space: nowrap; color: #e2e8f0; font-size: 0.95rem; }
         .cmd-part { color: var(--brand-orange); font-weight: bold; }
         
         .copy-btn {
           position: absolute; right: 8px; top: 8px; bottom: 8px;
-          background: #222; 
-          border: 1px solid #333;
-          color: #fff;
-          padding: 0 16px; 
-          border-radius: 8px; 
-          cursor: pointer;
-          font-size: 0.85rem; 
-          font-weight: 600; 
-          transition: all 0.2s;
+          background: #222; border: 1px solid #333; color: #fff; padding: 0 16px; 
+          border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
         }
-        
-        .copy-btn:hover { 
-          background: var(--brand-orange); 
-          border-color: var(--brand-orange);
-          color: #000;
-        }
+        .copy-btn:hover { background: var(--brand-orange); border-color: var(--brand-orange); color: #000; }
 
-        .footer { 
-          margin-top: 2.5rem; 
-          font-size: 0.875rem; 
-          color: var(--text-muted); 
-          text-align: center; 
+        /* UNINSTALL SECTION STYLES */
+        .uninstall-toggle {
+          margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1.5rem;
         }
+        details { color: var(--text-muted); cursor: pointer; }
+        summary { font-size: 0.9rem; font-weight: 600; transition: color 0.2s; list-style: none; display: flex; align-items: center; gap: 6px; }
+        summary:hover { color: #ef4444; } /* Red hover for uninstall */
+        summary::before { content: '🗑️'; font-size: 1rem; }
         
+        .danger-zone {
+          margin-top: 1rem; padding: 1rem; background: rgba(239, 68, 68, 0.1); 
+          border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px;
+        }
+        .danger-cmd { font-family: monospace; color: #fca5a5; font-size: 0.9rem; margin-top: 0.5rem; display: block; }
+
+        .footer { margin-top: 2rem; font-size: 0.875rem; color: var(--text-muted); text-align: center; }
         a { color: var(--text-main); text-decoration: underline; text-decoration-color: var(--brand-orange); text-underline-offset: 4px; }
         a:hover { color: var(--brand-orange); }
       </style>
@@ -180,7 +125,7 @@ export default {
         <p>The universal telemetry agent. Run the command below to install the service instantly.</p>
         
         <div class="section">
-          <span class="label icon-linux">Linux / macOS / Pi</span>
+          <span class="label">🐧 Linux / macOS / Pi</span>
           <div class="code-wrapper">
             <button id="btn-nix" class="copy-btn" onclick="copyToClipboard('curl -sL ${url.hostname} | sudo bash', 'btn-nix')">Copy</button>
             <div class="code-block">
@@ -190,13 +135,23 @@ export default {
         </div>
 
         <div class="section">
-          <span class="label icon-win">Windows PowerShell</span>
+          <span class="label">🪟 Windows PowerShell</span>
           <div class="code-wrapper">
             <button id="btn-win" class="copy-btn" onclick="copyToClipboard('iwr ${url.hostname} | iex', 'btn-win')">Copy</button>
             <div class="code-block">
               <span class="cmd-part">iwr</span> ${url.hostname} | iex
             </div>
           </div>
+        </div>
+
+        <div class="uninstall-toggle">
+          <details>
+            <summary>Need to uninstall?</summary>
+            <div class="danger-zone">
+              To remove the service and binary, run:
+              <span class="danger-cmd">sudo lighthouse --uninstall</span>
+            </div>
+          </details>
         </div>
 
         <div class="footer">
