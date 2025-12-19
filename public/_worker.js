@@ -200,7 +200,7 @@ export default {
         </div>
 
         <div class="footer">
-          <a href="https://github.com/harborscale/lighthouse" target="_blank">View Source Code</a>
+          <a href="https://github.com/harborscale/harbor-lighthouse" target="_blank">View Source Code</a>
         </div>
       </div>
     </body>
