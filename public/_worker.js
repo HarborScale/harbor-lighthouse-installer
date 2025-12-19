@@ -4,7 +4,6 @@ export default {
     const userAgent = request.headers.get("User-Agent") || "";
     
     // --- CONFIGURATION ---
-    // Updated to your new repo URL
     const LINUX_SCRIPT = "https://raw.githubusercontent.com/harborscale/harbor-lighthouse/main/scripts/install.sh";
     const WIN_SCRIPT   = "https://raw.githubusercontent.com/harborscale/harbor-lighthouse/main/scripts/install.ps1";
     // ---------------------
@@ -115,12 +114,14 @@ export default {
                    <span class="cmd-part" style="color:#ef4444">curl</span> -sL ${url.hostname} | sudo bash -s -- --uninstall
                  </div>
               </div>
+
               <br>
+
               <span class="danger-label">Windows</span>
               <div class="code-wrapper" style="border-color: #7f1d1d;">
-                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('lighthouse.exe --uninstall; Remove-Item \"C:\\Program Files\\HarborLighthouse\" -Recurse -Force', 'btn-rm-win')">Copy</button>
+                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('lighthouse.exe --uninstall; Remove-Item \\'C:\\\\Program Files\\\\HarborLighthouse\\' -Recurse -Force', 'btn-rm-win')">Copy</button>
                  <div class="code-block" style="color:#fca5a5;">
-                   lighthouse.exe --uninstall; Remove-Item "C:\Program Files\HarborLighthouse" -Recurse -Force
+                   lighthouse.exe --uninstall; Remove-Item 'C:\Program Files\HarborLighthouse' -Recurse -Force
                  </div>
               </div>
 
