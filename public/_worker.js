@@ -9,7 +9,7 @@ export default {
     // ---------------------
 
     // 1. CLI Detection
-    if (userAgent.includes("PowerShell") || userAgent.includes("Windows")) {
+    if (userAgent.includes("PowerShell") && userAgent.includes("Windows")) {
       return Response.redirect(WIN_SCRIPT, 302);
     }
     if (userAgent.includes("curl") || userAgent.includes("wget")) {
