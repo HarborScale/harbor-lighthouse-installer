@@ -1,6 +1,6 @@
 # 🚢 Harbor Lighthouse Installer
 
-This repository hosts the logic for **[get.harborscale.com](https://get.harborscale.com)**, the universal entry point for installing the Harbor Lighthouse agent.
+This repository hosts the logic for **[get.harborscale.com](https://get.harborscale.com)**, the universal entry point for installing the Harbor Lighthouse agent & plugins.
 
 It is designed to be transparent, secure, and fast, serving as a smart redirector based on the client's `User-Agent`.
 
