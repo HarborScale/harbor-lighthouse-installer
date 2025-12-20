@@ -1,3 +1,4 @@
+```javascript
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -44,7 +45,6 @@ export default {
           min-height: 100vh; 
           margin: 0; 
           padding: 20px; 
-          overflow: hidden;
         }
         .container { 
           background: var(--bg-card); 
@@ -299,3 +299,4 @@ export default {
     return new Response(html, { headers: { "Content-Type": "text/html" } });
   },
 };
+```
