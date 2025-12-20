@@ -1,26 +1,59 @@
 // Favicon data (base64 encoded)
 const FAVICON_DATA = "AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
 
-// Configuration constants
-const LINUX_SCRIPT = "https://raw.githubusercontent.com/harborscale/harbor-lighthouse/main/scripts/install.sh";
-const WIN_SCRIPT = "https://raw.githubusercontent.com/harborscale/harbor-lighthouse/main/scripts/install.ps1";
-
-const MESHTASTIC_LINUX_SCRIPT = "https://raw.githubusercontent.com/HarborScale/harbor-meshtastic/main/scripts/install.sh";
-const MESHTASTIC_WIN_SCRIPT = "https://raw.githubusercontent.com/HarborScale/harbor-meshtastic/main/scripts/install.ps1";
+// Product configurations
+const PRODUCTS = {
+  lighthouse: {
+    title: "Harbor Lighthouse",
+    description: "The universal telemetry agent. Run the command below to install the service instantly.",
+    productName: "HarborLighthouse",
+    repoName: "harbor-lighthouse",
+    linuxScript: "https://raw.githubusercontent.com/harborscale/harbor-lighthouse/main/scripts/install.sh",
+    winScript: "https://raw.githubusercontent.com/harborscale/harbor-lighthouse/main/scripts/install.ps1",
+    installDir: {
+      linux: "/usr/local/bin",
+      windows: "C:\\Program Files\\HarborLighthouse"
+    },
+    binaryName: {
+      linux: "lighthouse",
+      windows: "lighthouse.exe"
+    }
+  },
+  meshtastic: {
+    title: "Harbor Meshtastic",
+    description: "Meshtastic telemetry plugin for Harbor Lighthouse. Requires Lighthouse to be installed first.",
+    productName: "HarborMeshtastic",
+    repoName: "harbor-meshtastic",
+    linuxScript: "https://raw.githubusercontent.com/HarborScale/harbor-meshtastic/main/scripts/install.sh",
+    winScript: "https://raw.githubusercontent.com/HarborScale/harbor-meshtastic/main/scripts/install.ps1",
+    installDir: {
+      linux: "/opt/harbor-lighthouse/plugins",
+      windows: "C:\\HarborLighthouse\\Plugins"
+    },
+    binaryName: {
+      linux: "mesh_engine",
+      windows: "mesh_engine.exe"
+    },
+    requiresLighthouse: true
+  }
+};
 
 /**
  * Helper function to handle installation display
  */
 function handleInstall(url, userAgent, config) {
-  const { linuxScript, winScript, title, productName } = config;
-
   // CLI Detection - redirect to appropriate script
   if (userAgent.includes("PowerShell") && userAgent.includes("Windows")) {
-    return Response.redirect(winScript, 302);
+    return Response.redirect(config.winScript, 302);
   }
   if (userAgent.includes("curl") || userAgent.includes("wget")) {
-    return Response.redirect(linuxScript, 302);
+    return Response.redirect(config.linuxScript, 302);
   }
+
+  // Split title for styling
+  const titleParts = config.title.split(' ');
+  const firstWord = titleParts[0];
+  const restOfTitle = titleParts.slice(1).join(' ');
 
   // Browser Display
   const html = `
@@ -29,7 +62,7 @@ function handleInstall(url, userAgent, config) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Install ${title}</title>
+      <title>Install ${config.title}</title>
       <link rel="icon" type="image/x-icon" href="/favicon.ico">
       <style>
         :root {
@@ -104,6 +137,15 @@ function handleInstall(url, userAgent, config) {
           line-height: 1.6;
           margin-bottom: 2.5rem;
           font-size: 1.05rem;
+        }
+        .warning {
+          background: rgba(234, 179, 8, 0.1);
+          border: 1px solid rgba(234, 179, 8, 0.3);
+          border-radius: 12px;
+          padding: 1rem;
+          margin-bottom: 2rem;
+          color: #fbbf24;
+          font-size: 0.9rem;
         }
         .section {
           margin-bottom: 2rem;
@@ -251,8 +293,14 @@ function handleInstall(url, userAgent, config) {
     </head>
     <body>
       <div class="container">
-        <h1>${title.split(' ')[0]} <span>${title.split(' ').slice(1).join(' ')}</span></h1>
-        <p>The universal telemetry agent. Run the command below to install the service instantly.</p>
+        <h1>${firstWord} <span>${restOfTitle}</span></h1>
+        <p>${config.description}</p>
+        ${config.requiresLighthouse ? `
+        <div class="warning">
+          ⚠️ <strong>Prerequisite:</strong> This plugin requires Harbor Lighthouse to be installed first. 
+          <a href="/" style="color: #fbbf24;">Install Lighthouse →</a>
+        </div>
+        ` : ''}
 
         <div class="section">
           <span class="label">🐧 Linux / macOS / Pi</span>
@@ -263,6 +311,7 @@ function handleInstall(url, userAgent, config) {
             </div>
           </div>
         </div>
+        
         <div class="section">
           <span class="label">🪟 Windows PowerShell</span>
           <div class="code-wrapper">
@@ -272,6 +321,7 @@ function handleInstall(url, userAgent, config) {
             </div>
           </div>
         </div>
+        
         <div class="uninstall-toggle">
           <details>
             <summary>Need to uninstall?</summary>
@@ -286,14 +336,15 @@ function handleInstall(url, userAgent, config) {
               <br>
               <span class="danger-label">Windows</span>
               <div class="code-wrapper" style="border-color: #7f1d1d;">
-                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('${productName} --uninstall; Remove-Item \\'C:\\\\Program Files\\\\${productName}\\' -Recurse -Force', 'btn-rm-win')">Copy</button>
+                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('iwr ${url.hostname}${url.pathname} -UseBasicParsing | iex -ArgumentList \\'-Uninstall\\'', 'btn-rm-win')">Copy</button>
                  <div class="code-block" style="color:#fca5a5;">
-                   ${productName} --uninstall; Remove-Item 'C:\\Program Files\\${productName}' -Recurse -Force
+                   iwr ${url.hostname}${url.pathname} -UseBasicParsing | iex -ArgumentList '-Uninstall'
                  </div>
               </div>
             </div>
           </details>
         </div>
+        
         <div class="footer">
           <a href="https://github.com/harborscale/${config.repoName}" target="_blank">View Source Code</a>
         </div>
@@ -325,28 +376,14 @@ export default {
       });
     }
 
-    // SCENARIO 1: The Meshtastic Plugin
-    // URL: get.harborscale.com/meshtastic
+    // Route: /meshtastic
     if (url.pathname === "/meshtastic") {
-      return handleInstall(url, userAgent, {
-        linuxScript: MESHTASTIC_LINUX_SCRIPT,
-        winScript: MESHTASTIC_WIN_SCRIPT,
-        title: "Harbor Meshtastic",
-        productName: "HarborMeshtastic",
-        repoName: "harbor-meshtastic"
-      });
+      return handleInstall(url, userAgent, PRODUCTS.meshtastic);
     }
 
-    // SCENARIO 2: The Main Harbor Install (Root)
-    // URL: get.harborscale.com
+    // Route: / (root - Lighthouse)
     if (url.pathname === "/") {
-      return handleInstall(url, userAgent, {
-        linuxScript: LINUX_SCRIPT,
-        winScript: WIN_SCRIPT,
-        title: "Harbor Lighthouse",
-        productName: "HarborLighthouse",
-        repoName: "harbor-lighthouse"
-      });
+      return handleInstall(url, userAgent, PRODUCTS.lighthouse);
     }
 
     // Handle 404 for unknown paths
