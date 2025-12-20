@@ -280,9 +280,9 @@ export default {
               <br>
               <span class="danger-label">Windows</span>
               <div class="code-wrapper" style="border-color: #7f1d1d;">
-                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('lighthouse.exe --uninstall; Remove-Item \\'C:\\\\Program Files\\\\HarborLighthouse\\' -Recurse -Force', 'btn-rm-win')">Copy</button>
+                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('lighthouse --uninstall; Remove-Item \\'C:\\\\Program Files\\\\HarborLighthouse\\' -Recurse -Force', 'btn-rm-win')">Copy</button>
                  <div class="code-block" style="color:#fca5a5;">
-                   lighthouse.exe --uninstall; Remove-Item 'C:\Program Files\HarborLighthouse' -Recurse -Force
+                   lighthouse --uninstall; Remove-Item 'C:\Program Files\HarborLighthouse' -Recurse -Force
                  </div>
               </div>
             </div>
