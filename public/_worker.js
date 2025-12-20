@@ -336,9 +336,10 @@ function handleInstall(url, userAgent, config) {
               <br>
               <span class="danger-label">Windows</span>
               <div class="code-wrapper" style="border-color: #7f1d1d;">
-                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('iwr ${url.hostname}${url.pathname} -UseBasicParsing | iex -ArgumentList \\'-Uninstall\\'', 'btn-rm-win')">Copy</button>
+                 <button id="btn-rm-win" class="copy-btn" onclick="copyToClipboard('& ([scriptblock]::Create((iwr ${url.hostname}${url.pathname}).Content)) -Uninstall', 'btn-rm-win')">Copy</button>
                  <div class="code-block" style="color:#fca5a5;">
-                   iwr ${url.hostname}${url.pathname} -UseBasicParsing | iex -ArgumentList '-Uninstall'
+                   & ([scriptblock]::Create((iwr ${url.hostname}${url.pathname}).Content)) -Uninstall
+
                  </div>
               </div>
             </div>
